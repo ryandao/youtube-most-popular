@@ -1,7 +1,3 @@
-process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
-});
-
 var request = require('request');
 var querystring = require('querystring');
 var q = require('q');
@@ -64,7 +60,6 @@ var api = function() {
   };
 
   this.videoQuery = function(queryStr) {
-    process.stdout.write("!");
     var url = this.baseUrl + 'videos?' + queryStr;
     return this.query(url);
   };
@@ -134,7 +129,6 @@ var api = function() {
 
   this.fetchAllVideos = function(channelIds) {
     var promises = [];
-    console.log("Total channels: " + channelIds.length);
 
     channelIds.forEach(function(channelId) {
       var queryStr = querystring.stringify({
@@ -240,7 +234,6 @@ MongoClient.connect("mongodb://" + host + ":" + port + "/" + db, function(err, d
     api.fetchAllChannels(categoryIds).forEach(function(channelIds) {
       api.fetchAllVideos(channelIds).forEach(function(videoJsons) {
         videoJsons.forEach(function(videoJson) {
-          process.stdout.write(".");
           var video = new Video(videoJson);
           video.saveIfPopular(collection);
         });
