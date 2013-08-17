@@ -1,21 +1,36 @@
 $('document').ready(function() {
-  $.ajax({
-    url: '/videos',
-    dataType: 'json',
-    success: function(data) {
-      var html = "";
+  var nextPage = 1;
 
-      data.items.forEach(function(videoJson) {
-        var video = new Video(videoJson);
-        html += video.getFullHtml();
-      });
+  var queryVideos = function(data, callback) {
+    $.ajax({
+      url: '/videos',
+      data: data,
+      dataType: 'json',
+      success: callback,
+      error: function(error) { console.log(error); }
+    });
+  };
 
-      $('#content').prepend(html);
-    },
-    error: function(error) {
-      console.log(error);
+  var videoLoadedCallback = function(data) {
+    var html = "";
+
+    if (typeof data.nextPage !== 'undefined') {
+      nextPage = data.nextPage;
     }
-  })
+
+    data.items.forEach(function(videoJson) {
+      var video = new Video(videoJson);
+      html += video.getFullHtml();
+    });
+
+    $('#content').prepend(html);
+  };
+
+  $('#load-more').click(function() {
+    queryVideos({ nextPage: nextPage }, videoLoadedCallback);
+  });
+
+  queryVideos({}, videoLoadedCallback)
 });
 
 var Video = function(json) {
