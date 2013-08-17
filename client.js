@@ -11,7 +11,7 @@ connect.createServer(
   connect.static('client'),
   connectRoute(function(app) {
     app.get('/videos', function(req, res) {
-      var pageSize = 50;
+      var pageSize = 20;
       var currentPage = 1;
 
       MongoClient.connect("mongodb://" + host + ":" + port + "/" + db, function(err, db) {

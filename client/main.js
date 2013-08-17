@@ -3,10 +3,14 @@ $('document').ready(function() {
     url: '/videos',
     dataType: 'json',
     success: function(data) {
+      var html = "";
+
       data.items.forEach(function(videoJson) {
         var video = new Video(videoJson);
-        $('#content').append(video.getFullHtml());
+        html += video.getFullHtml();
       });
+
+      $('#content').prepend(html);
     },
     error: function(error) {
       console.log(error);
@@ -32,7 +36,7 @@ var Video = function(json) {
 
   this.getFullHtml = function() {
     var html =
-      "<div> " +
+      "<div class='video-result'> " +
         _this.getEmbedHtml() +
         "<p>" +
           _this.title +
